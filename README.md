@@ -1,2 +1,2 @@
 # golang-stuff
-Golanf experiments
+Golang experiments
