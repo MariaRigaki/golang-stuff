@@ -32,7 +32,7 @@ func main() {
 }
 
 func isPrivate(ip string) bool {
-	ip4 := net.ParseIP(ip)
+	ip4 := net.ParseIP(ip).To4()
 	if ip4 != nil {
 		splits := strings.SplitN(ip, ".", 4)
 		if (splits[0] == "10") || (splits[0] == "192" && splits[1] == "168") {
@@ -49,6 +49,8 @@ func isPrivate(ip string) bool {
 	return false
 }
 
+// This function was copied straight out of dnsclient.go
+// in http://golang.org/src/net/dnsclient.go
 func isDomainName(s string) bool {
 	// See RFC 1035, RFC 3696.
 	if len(s) == 0 {
