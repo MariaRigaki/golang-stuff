@@ -1,36 +1,58 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 )
 
 var hostname = flag.String("t", "google.com", "target domain")
+var wordlist = flag.String("w", "wordlist.txt", "wordlist")
+
+// TODO: Add support for saving results in a file instead of STDOUT
+// TODO: Add support for delay between requests
+// TODO: Add goroutine support
 
 func main() {
 	flag.Parse()
-
-	if isDomainName(*hostname) {
-		addrs, err := net.LookupHost(*hostname)
-		if err != nil {
-			fmt.Println(err)
-		}
-		for _, a := range addrs {
-			if isPrivate(a) {
-				fmt.Print("[+] ")
-			}
-			fmt.Println(a)
-		}
-
-	} else {
-		fmt.Println("Invalid domain name: " + *hostname)
+	file, err := os.Open(*wordlist)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
+	defer file.Close()
 
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		prefix := scanner.Text()
+		host := fmt.Sprintf(prefix + "." + *hostname)
+
+		// If the domain name is created is valid and if
+		// it exists print out the domain and the respective IPs
+		if isDomainName(host) {
+			addrs, err := net.LookupHost(host)
+			if err != nil {
+				//fmt.Println(err)
+				continue
+			}
+			fmt.Println("\n" + host)
+			for _, a := range addrs {
+				if isPrivate(a) {
+					// Mark the private IPs
+					fmt.Print("[+] ")
+				}
+				fmt.Println(a)
+			}
+
+		}
+	}
 }
 
+// Checks if an IPv4 address is private
 func isPrivate(ip string) bool {
 	ip4 := net.ParseIP(ip).To4()
 	if ip4 != nil {
