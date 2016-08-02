@@ -18,7 +18,7 @@ func main() {
 
 	info, err := f.Stat()
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
 	// calculate the data size
@@ -28,6 +28,9 @@ func main() {
 	// read into buffer
 	buffer := bufio.NewReader(f)
 	_, err = buffer.Read(data)
+	if err != nil {
+		panic(err)
+	}
 
 	offset := len(data) % 1024
 

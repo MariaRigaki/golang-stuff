@@ -35,10 +35,9 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// Create a map that holds the calculations for x1's as strings
+	// Create a map that uses the calculations for x1's as keys
 	hashTable := make(map[string]int64, B.Int64())
 
-	// Calculate the x1's and store them in the map
 	var i int64
 	for i = 0; i < B.Int64(); i++ {
 		hashTable[computeX1(p, g, h, big.NewInt(i)).String()] = i
