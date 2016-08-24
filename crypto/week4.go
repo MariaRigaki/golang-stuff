@@ -105,5 +105,3 @@ func main() {
 
 	fmt.Println(string(plaintext))
 }
-
-//The Magic Words are Squeamish Ossifrage
